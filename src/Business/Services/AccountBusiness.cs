@@ -15,11 +15,11 @@ namespace Business.Services
             _accountRepository = accountRepository;
         }
 
-        public async Task<Account> GetAccount(int id) => await _accountRepository.GetAccount(id);
+        public async Task<Account> GetAccount(int id) => await _accountRepository.SelectAccount(id);
 
-        public async Task<IEnumerable<Account>> GetAccounts() => await _accountRepository.GetAccounts();
+        public async Task<IEnumerable<Account>> GetAccounts() => await _accountRepository.SelectAccounts();
 
-        public async Task<int> Create(Account account) => await _accountRepository.CreateAccount(account);
+        public async Task<int> Create(Account account) => await _accountRepository.InsertAccount(account);
 
         public async Task<int> Update(Account account) => await _accountRepository.UpdateAccount(account);
 
@@ -31,8 +31,7 @@ namespace Business.Services
             int affectedRows = 0;
             if (account.Withdraw(value))
             {
-                affectedRows = await _accountRepository.UpdateAccount(account);
-                return affectedRows;
+                return await _accountRepository.UpdateAccount(account);
             }
             return affectedRows;
         }
@@ -41,8 +40,7 @@ namespace Business.Services
         {
             Account account = await GetAccount(accountNumber);
             account.Deposit(value);
-            int affectedRows = await _accountRepository.UpdateAccount(account);
-            return affectedRows;
+            return await _accountRepository.UpdateAccount(account);
         }
 
         public async Task<int> Transfer(int originAccountNumber, int destinationAccountNumber, double value)

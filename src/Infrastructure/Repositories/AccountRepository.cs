@@ -4,7 +4,6 @@ using Infrastructure.Context;
 using Domain.Models.Entities;
 using System.Data.SqlClient;
 using Dapper;
-using System.Linq;
 using Infrastructure.Interfaces;
 
 namespace Infrastructure.Repositories
@@ -12,50 +11,27 @@ namespace Infrastructure.Repositories
     public class AccountRepository : IAccountRepository
     {
         private readonly IAccountContext _accountContext;
+        private readonly SqlConnection _connection;
 
         public AccountRepository(IAccountContext accountContext)
         {
             _accountContext = accountContext;
+            _connection = _accountContext.OpenDatabaseConnection();
         }
 
-        public async Task<Account> GetAccount(int id)
-        {
-            string query = "SELECT * FROM Account WHERE Id = @Id";
-            SqlConnection connection = _accountContext.OpenDatabaseConnection();
-            var result = await connection.QuerySingleOrDefaultAsync<Account>(sql: query, new { Id = id });
-            return result;
-        }
+        public async Task<Account> SelectAccount(int id)
+            => await _connection.QuerySingleOrDefaultAsync<Account>(sql: "SELECT * FROM Account WHERE Id = @Id", new { Id = id });
 
-        public async Task<IEnumerable<Account>> GetAccounts()
-        {
-            string query = "SELECT * FROM Account";
-            SqlConnection connection = _accountContext.OpenDatabaseConnection();
-            var result = await connection.QueryAsync<Account>(sql: query);
-            return result.ToList();
-        }
+        public async Task<IEnumerable<Account>> SelectAccounts()
+            => await _connection.QueryAsync<Account>(sql: "SELECT * FROM Account");
 
-        public async Task<int> CreateAccount(Account account)
-        {
-            string query = "INSERT INTO Account (Holder, Balance) VALUES (@Holder, @Balance)";
-            SqlConnection connection = _accountContext.OpenDatabaseConnection();
-            var numberOfAffectedLines = await connection.ExecuteAsync(sql: query, param: account);
-            return numberOfAffectedLines;
-        }
+        public async Task<int> InsertAccount(Account account)
+            => await _connection.ExecuteAsync(sql: "INSERT INTO Account (Holder, Balance) VALUES (@Holder, @Balance)", param: account);
 
         public async Task<int> UpdateAccount(Account account)
-        {
-            string query = "UPDATE Account SET Holder = @Holder, Balance = @Balance WHERE Id = @Id";
-            SqlConnection connection = _accountContext.OpenDatabaseConnection();
-            int numberOfAffectedLines = await connection.ExecuteAsync(sql: query, param: account);
-            return numberOfAffectedLines;
-        }
+            => await _connection.ExecuteAsync(sql: "UPDATE Account SET Holder = @Holder, Balance = @Balance WHERE Id = @Id", param: account);
 
         public async Task<int> DeleteAccount(int id)
-        {
-            string query = "DELETE FROM Account WHERE Id = @id";
-            SqlConnection connection = _accountContext.OpenDatabaseConnection();
-            int numberOfAffectedLines = await connection.ExecuteAsync(sql: query, new { id });
-            return numberOfAffectedLines;
-        }
+            => await _connection.ExecuteAsync(sql: "DELETE FROM Account WHERE Id = @id", new { id });
     }
 }

@@ -6,9 +6,9 @@ namespace Infrastructure.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<Account> GetAccount(int id);
-        Task<IEnumerable<Account>> GetAccounts();
-        Task<int> CreateAccount(Account account);
+        Task<Account> SelectAccount(int id);
+        Task<IEnumerable<Account>> SelectAccounts();
+        Task<int> InsertAccount(Account account);
         Task<int> UpdateAccount(Account account);
         Task<int> DeleteAccount(int id);
     }
