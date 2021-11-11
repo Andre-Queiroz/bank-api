@@ -15,35 +15,15 @@ namespace Business.Services
             _accountRepository = accountRepository;
         }
 
-        public async Task<Account> GetAccount(int id)
-        {
-            Account account = await _accountRepository.GetAccount(id);
-            return account;
-        }
+        public async Task<Account> GetAccount(int id) => await _accountRepository.GetAccount(id);
 
-        public async Task<IEnumerable<Account>> GetAccounts()
-        {
-            IEnumerable<Account> accounts = await _accountRepository.GetAccounts();
-            return accounts;
-        }
+        public async Task<IEnumerable<Account>> GetAccounts() => await _accountRepository.GetAccounts();
 
-        public async Task<int> Create(Account account)
-        {
-            int affectedRows = await _accountRepository.CreateAccount(account);
-            return affectedRows;
-        }
+        public async Task<int> Create(Account account) => await _accountRepository.CreateAccount(account);
 
-        public async Task<int> Update(Account account)
-        {
-            int affectedRows = await _accountRepository.UpdateAccount(account);
-            return affectedRows;
-        }
+        public async Task<int> Update(Account account) => await _accountRepository.UpdateAccount(account);
 
-        public async Task<int> Delete(int id)
-        {
-            int affectedRows = await _accountRepository.DeleteAccount(id);
-            return affectedRows;
-        }
+        public async Task<int> Delete(int id) => await _accountRepository.DeleteAccount(id);
 
         public async Task<int> Withdraw(int accountNumber, double value)
         {
